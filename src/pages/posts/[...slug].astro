@@ -2,8 +2,9 @@
 import { readingTime } from "reading-time-estimator";
 import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
+import { markdownToTxt } from "markdown-to-txt";
 import DefaultLayout from "@layouts/DefaultLayout.astro";
-import ThemeBtn from "@react/ThemeBtn.tsx";
+import ThemeBtn from "@react/ThemeBtn";
 import ArticleInfo from "@astro/ArticleInfo.astro";
 
 // Type for the `blog` collection entry
@@ -18,7 +19,6 @@ export async function getStaticPaths() {
       params: { slug },
       props: {
         ...post,
-        words: post.body,
       },
     };
   });
@@ -46,7 +46,7 @@ const {
       </div>
       <ArticleInfo
         date={new Date(date).toDateString()}
-        TimeTakenToRead={readingTime(post.words).text}
+        TimeTakenToRead={readingTime(markdownToTxt(post.body)).text}
         topic={topic}
       />
     </div>

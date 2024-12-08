@@ -1,5 +1,8 @@
 ---
 title: About Me
+name: Abhishek Sriram
+pronunciation: /ab-hee-shake/
+headline: Robotics | Grad Student @ Northeastern
 ---
 
 I am majoring in Robotics at [Northeastern University](https://www.northeastern.edu/). My love for robotics started a few years ago when I began to work on hobby projects using Arduino and ESP-IDF to build a six-degrees-of-freedom robot arm. My area of interest includes Computer Vision, Machine Learning, and Software Engineering.

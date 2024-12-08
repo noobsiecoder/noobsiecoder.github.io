@@ -2,19 +2,159 @@
 slug: "lane-detection-and-road-segmentation-system"
 title: "Lane Detection and Road Segmentation System in AVs"
 emoji: "🚗"
-date: 2024-05-02T15:20:25.126Z
-desc: "Building a Lane detection and a road Segmentation system using classical computer vision techniques and machine learning respectively"
+date: 2024-12-07T15:20:25.126Z
+desc: "Building a Lane Detection using classical computer vision techniques and a Road Segmentation system using state-of-the-art machine learning technique"
 topic: "Computer Vision + Deep Learning"
 lang: "en"
-draft: true
+draft: false
 ---
+
+import BlogImage from "@astro/BlogImage.astro";
+
+<BlogImage
+  src="https://gitlab.com/sriram.ab/eece5639/-/raw/main/Final_Project/samples/output_video_0029.gif?ref_type=heads"
+  alt="plain-lane-extract"
+  caption="Plain Lane Extraction without using any machine learning model"
+  client:load
+/>
 
 ## Introduction
 
+Ever since the [2005 DARPA Grand Challenge](<https://en.wikipedia.org/wiki/DARPA_Grand_Challenge_(2005)>), autonomous vehicles (AV) have been a popular topic for research. In this blog, I will share how I leveraged lane detection using OpenCV and road segmentation by training an ML model using PyTorch. This research was done for my final project in the Computer Vision class (EECE 5639) at Northeastern University during Spring 2024.
+
+In this research, the lane detection system is replicated as robust and quick to use in a real-time system without machine learning (for lane detection). Also, the [KITTI dataset](https://www.cvlibs.net/datasets/kitti/) has been used for research purposes. The code can be accessed [here](https://gitlab.com/sriram.ab/eece5639/-/tree/main/Final_Project).
+
+_**Fun Fact**: The whole software is powered to detect lanes and segment roads using linear algebra and matrix multiplication. xD_
+
 ## Lane Detection
 
-### Ideas
+Lane detection is fundamental in autonomous driving systems, ensuring safe and efficient road navigation. As the pursuit of autonomous vehicles continues to advance, the accurate identification and tracking of lanes have become increasingly paramount. Lane detection enables vehicles to maintain their position within lanes, execute lane changes, and make informed real-time trajectory decisions.
+
+### Intuition
+
+<BlogImage
+  src="https://firebasestorage.googleapis.com/v0/b/portfolio-data-f5676.appspot.com/o/img%2Fblog%2Flane-detect-road-segment%2Froi.png?alt=media&token=97f141b9-1421-4143-b105-77b94a037a5c"
+  alt="lane-extract-intuition"
+  caption="Lane extraction intuition: The yellow segment is the region of interest with an angular constraint. A trapezoidal mask should be created on top of the yellow segment in the image frame."
+  client:load
+/>
+
+Consider a [stereo vision camera setup](https://www.mathworks.com/discovery/stereo-vision.html). If we have a constructed 2d frame, and we intend to extract the lane, we will:
+
+1. Extract the region of interest (ROI).
+2. Preprocess the image to remove any noise and distortion in the image signal.
+3. Apply _X_ algorithm to extract lane information.
+
+Here, the _X_ algorithm is [Hough Transform](https://docs.opencv.org/3.4/d9/db0/tutorial_hough_lines.html), which is a feature extraction technique commonly used in computer vision. Hough Transform helps us to extract straight lines in an image frame.
+
+### Image Preprocessing
+
+This is the preliminary stage. After reading a couple of research papers on how they preprocessed each image frame, I explored a few techniques. First, the ROI of the image frame is considered. For this step, a few assumptions have been made.
+
+After getting the ROI from the image frame, the color channel is converted to grayscale. Then, gaussian blur is applied (noise reduction) for [canny edge detection](/posts/canny-edge-detection) and then [morphological dilation](https://www.mathworks.com/help/images/morphological-dilation-and-erosion.html) in the image frame to refine and enhance detected lane markings.
+
+### Lane Extraction
+
+<BlogImage
+  src="https://github.com/noobsiecoder/lane-detection/blob/v0.1-abhi/samples/output_video_0002.gif?raw=true"
+  alt="lane-extract-w/o-pht"
+  caption="Lane extraction with Hough Transform (not accurate enough but does the job)."
+  client:load
+/>
+
+To extract the lane information from the image frame, I initially used the conventional Hough Transform. This should have worked, but the lane extraction failed. Upon further investigation, I found that I wasn't choosing only the lane markings from the ROI but also other straight lines in the image frame. These false lines were from the shadows on the road, cracks, and, weirdly, a line between the new road asphalt and the old road (the color difference counted as a line by the canny edge detection).
+
+<BlogImage
+  src="https://github.com/noobsiecoder/lane-detection/blob/v0.1-abhi/samples/Figure_3.png?raw=true"
+  alt="lane-extract-w/o-homography"
+  caption="Lane extraction without performing homography."
+  client:load
+/>
+
+I tweaked the parameters in the canny edge detection step, yet it was still a failure. Then, I found an article on Medium about using [homographies](https://docs.opencv.org/4.x/d9/dab/tutorial_homography.html) for lane detection. I used this technique first, then preprocessed the image and applied the Hough transform. Voila, it worked; I could concentrate my lane extraction on the road using homography, omitting other objects in the ROI. The lane extraction was 20x accurate than the previous attempt (though it still struggled with the shadows and other objects).
+
+<BlogImage
+  src="https://github.com/noobsiecoder/lane-detection/blob/v0.1-abhi/samples/Figure_2.png?raw=true"
+  alt="lane-extract-w/o-homography"
+  caption="Lane extraction after performing homography."
+  client:load
+/>
+
+Now, I wanted to make the system more accurate. I first experimented with the blurring techniques provided by OpenCV. I tried using bilateral blur instead of Gaussian blur, which gave me a 2.5x increase in lane extraction. But still, it wasn't a huge increase in accuracy.
+
+<BlogImage
+  src="https://firebasestorage.googleapis.com/v0/b/portfolio-data-f5676.appspot.com/o/img%2Fblog%2Flane-detect-road-segment%2F0029xs1.png?alt=media&token=de91af1a-6ca1-4d93-bcef-67836c296748"
+  alt="lane-extract-w-pht"
+  caption="Lane extraction after performing homography and PHT."
+  client:load
+/>
+
+Then, I used the [Probabilistic Hough Transform](https://homepages.inf.ed.ac.uk/rbf/CVonline/LOCAL_COPIES/AV1011/macdonald.pdf) (PHT). This enhanced lane detection by efficiently detecting line segments in noisy images. Unlike the standard Hough Transform, PHT randomly selects a subset of edge points, reducing computational complexity while maintaining accuracy. By probabilistically sampling edge points, PHT focuses on prominent lines, such as lane markings, while ignoring noise and clutter.
+
+After using these techniques, the lane detection system became more robust and could easily and quickly extract the lane markings from an image frame.
+
+The key values can be seen below:
+
+|                            | Precision(%) |  F1   | Time(sec) | Memory(MiB) |
+| :------------------------- | :----------: | :---: | :-------: | :---------: |
+| SEQ_0001 (0:11 @ 10.37fps) |    66.22     | 77.47 |   1.02    |   475.49    |
+| SEQ_0002 (0:08 @ 10.37fps) |    78.49     | 86.90 |   0.89    |   435.56    |
+| SEQ_0011 (0:22 @ 10.37fps) |    68.52     | 77.69 |   1.17    |   484.00    |
+| SEQ_0015 (0:29 @ 10.37fps) |    95.04     | 85.18 |   1.45    |   488.77    |
 
 ## Road Segmentation
 
-### Ideas
+### Intuition
+
+The road region must be obtained from the image frame. Hence, the technique to use is image segmentation. In the scope of image segmentation, here, it is semantic segmentation. The ML technique proposed to use was the [U-Net algorithm](https://www.geeksforgeeks.org/u-net-architecture-explained/). It is used for segmentation in smaller datasets for high-previse segmentation maintaining speed.
+
+### Dataset
+
+The image dataset was used explicitly from the [KITTI dataset](https://www.cvlibs.net/datasets/kitti/eval_semantics.php) for semantics. The image dataset was divided into training, validation, and test sets. The split from the dataset is 75% for training, 15% for validation, and another 15% for testing purposes. The total number of images available is 200 (in April 2024).
+
+Before training, the image dataset was augmented to add more information and make the model robust and work well with the new dataset. The model was trained using the U-Net algorithm with the Adam optimizer.
+
+### Observation
+
+<BlogImage
+  src="https://gitlab.com/sriram.ab/eece5639/-/raw/main/Final_Project/models/predicted-2.png?ref_type=heads"
+  alt="road-segmentation-example"
+  caption="Road segmentation in action: Pixel by Pixel comparison."
+  client:load
+/>
+
+1. The ML model is robust, and the segmentation is accurate. With the new dataset, the model could segment without any overfitting.
+2. The model's key results are shown below in the table
+
+|      Type      | Values(%) |
+| :------------: | :-------: |
+| Pixel Accuracy |   99.45   |
+|  IoU Accuracy  |   99.35   |
+|  Train Error   |    2.3    |
+|   Test Error   |    3.2    |
+
+## Future Scope
+
+<BlogImage
+  src="https://firebasestorage.googleapis.com/v0/b/portfolio-data-f5676.appspot.com/o/img%2Fblog%2Flane-detect-road-segment%2F0038xf1.png?alt=media&token=a55349e4-4ba3-4c1e-9a21-fe124b704d2c"
+  alt="lane-extract-in-non-road"
+  caption="Lane extraction in an irregular place."
+  client:load
+/>
+
+The lane detection system marked the line where the curb and the ground met when tested on an image set without any lane markings. This could be said to be a success, but a more robust system is still required in an off-road terrain travel scenario.
+
+<BlogImage
+  src="https://firebasestorage.googleapis.com/v0/b/portfolio-data-f5676.appspot.com/o/img%2Fblog%2Flane-detect-road-segment%2F0027xf1.png?alt=media&token=86c6acf7-9086-47c4-b215-cc6b46c24688"
+  alt="lane-extract-in-action"
+  caption="Lane extraction with shadow and noise in the image."
+  client:load
+/>
+
+Also, the road segmentation system could be made to work in unison with the lane detection system for more accurate results.
+
+## References
+
+1. ["Advanced Lane Detection for Autonomous Vehicles using Computer Vision techniques"](https://towardsdatascience.com/advanced-lane-detection-for-autonomous-vehicles-using-computer-vision-techniques-f229e4245e41) by Raj uppala, Medium
+2. ["Hough Transform"](https://homepages.inf.ed.ac.uk/rbf/HIPR2/hough.htm) notes from the School of Informatics, University of Edinburgh
+3. ["Preprocessing Methods of Lane Detection and Tracking for Autonomous Driving"](https://arxiv.org/abs/2104.04755) by Akram Heidarizadeh, arxiv
