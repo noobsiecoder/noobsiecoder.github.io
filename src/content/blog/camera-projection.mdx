@@ -38,7 +38,6 @@ To derive the pixel coordinates from the World coordinate system. We use the fol
   alt="mapping"
   caption="Forward propagation of the mapping"
   invertColor={true}
-  client:load
 />
 
 Here, the mapping from 3D to 2D happens at the third step between the Camera Coordinate and the Film coordinate. Now, what do these coordinates mean?
@@ -68,7 +67,6 @@ We need a reference when we map from one function to another in an n-dimensional
   src="https://firebasestorage.googleapis.com/v0/b/portfolio-data-f5676.appspot.com/o/img%2Fblog%2Fcamera-projection%2Ftransformation_illustration.webp?alt=media&token=881752a1-2710-4c4b-b587-da8db05315d5"
   alt="Transformation"
   caption="Scene point to Image point"
-  client:load
 />
 
 How do we express them mathematically? The simple trick is to take XYZ, and xy coordinates to form two triangles and use a similar triangle rule:
@@ -123,7 +121,6 @@ When transforming the world coordinate to a camera coordinate system, we need to
   src="https://firebasestorage.googleapis.com/v0/b/portfolio-data-f5676.appspot.com/o/img%2Fblog%2Fcamera-projection%2Ftransformation2_illustration.webp?alt=media&token=fcad69d2-ffb8-43df-9b08-e397e95fed31"
   alt="Transformation-2"
   caption="Transformation: World coordinate to Camera coordinate"
-  client:load
 />
 
 Now, the parameters that define this transformation are:
@@ -182,17 +179,14 @@ $$
   src="https://firebasestorage.googleapis.com/v0/b/portfolio-data-f5676.appspot.com/o/img%2Fblog%2Fcamera-projection%2Ftransformation3_illustration.webp?alt=media&token=9e5ddd07-4ea4-424f-bcc1-faa3adf7b4fc"
   alt="Transformation-3"
   caption="Transformation: Film coordinate to Pixel coordinate"
-  client:load
 />
 
 We use an affine transformation from the film coordinate to the pixel coordinate. It preserves parallelism and collinearity, but we lose information about the orientation. Hence, the final equation becomes:
-
 
 <BlogImage
   src="https://firebasestorage.googleapis.com/v0/b/portfolio-data-f5676.appspot.com/o/img%2Fblog%2Fcamera-projection%2Fmath.webp?alt=media&token=6deb8cd6-7cfc-4676-8d6b-04dda17b63b2"
   alt="affine transformation equation"
   caption="Equation: world to pixel coordinate"
-  client:load
 />
 
 ## Conclusion

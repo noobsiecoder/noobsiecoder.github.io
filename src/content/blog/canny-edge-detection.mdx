@@ -27,7 +27,6 @@ We shall perform canny edge detection on this image:
   src="https://github.com/noobsiecoder/edge-detection-filters/blob/main/samples/img_01.png?raw=true"
   alt="Cool mustang"
   caption="Sample image (Shot on iPhone 14 Pro)"
-  client:load
 />
 
 ## The steps involved in performing Canny edge detection are:
@@ -46,7 +45,6 @@ We shall perform canny edge detection on this image:
   src="https://firebasestorage.googleapis.com/v0/b/portfolio-data-f5676.appspot.com/o/img%2Fblog%2Fcanny-edge-detection%2Fgrayscale_img.webp?alt=media&token=cdfbbcdf-7b6e-4ec7-9cb4-51c06b82fe42"
   alt="Cool mustang in grayscale"
   caption="image converted to grayscale"
-  client:load
 />
 
 The first step is to convert the image with 3 channels (usually red, green, and blue) to a one-unit channel (intensity). The standard method is to use the formula:
@@ -76,7 +74,6 @@ def grayscale(self):
   src="https://firebasestorage.googleapis.com/v0/b/portfolio-data-f5676.appspot.com/o/img%2Fblog%2Fcanny-edge-detection%2Fgaussian_map.webp?alt=media&token=7f61f7be-12eb-4725-8693-4b3f23c9c897"
   alt="gaussian blur"
   caption='A representation of a Gaussian function in 3D space, <a href="https://i.stack.imgur.com/Tz6TC.png">Credits</a>'
-  client:load
 />
 
 Gaussian blur is used to remove the random noise in the image pixel. Now, how would blurring an image remove the random noise? We tend to picture images as images, but instead, they are signals, a frequency.
@@ -112,7 +109,6 @@ The critical factor is that the Gaussian blur depends on the kernel size and the
   src="https://firebasestorage.googleapis.com/v0/b/portfolio-data-f5676.appspot.com/o/img%2Fblog%2Fcanny-edge-detection%2Fblurred_img.webp?alt=media&token=db77dea2-552f-44a0-be5a-e43ad8123cc2"
   alt="gaussian blurred image"
   caption="Blurred image with <strong>size = 5x5</strong> and <strong>σ = 2.5</strong>"
-  client:load
 />
 
 ### Gradient Calculation
@@ -168,7 +164,6 @@ def gradient_approximation(self):
   src="https://firebasestorage.googleapis.com/v0/b/portfolio-data-f5676.appspot.com/o/img%2Fblog%2Fcanny-edge-detection%2Fsobel_img.webp?alt=media&token=d9dc91b6-f18e-41c4-9913-5befb109187d"
   alt="sobel image"
   caption="Sobel filtered image"
-  client:load
 />
 
 ### Non-max Suppression
@@ -177,7 +172,6 @@ def gradient_approximation(self):
   src="https://firebasestorage.googleapis.com/v0/b/portfolio-data-f5676.appspot.com/o/img%2Fblog%2Fcanny-edge-detection%2Fnon_max_suppression_illustration.webp?alt=media&token=e296497e-190a-46b3-9106-365f6c3c93df"
   alt="non-max supression illustration"
   caption="Image pixels represented as 2D array when before performing non-max suppression"
-  client:load
 />
 
 After applying the Sobel operator, we could conclude our mission to find the edges. But what if the edges are thick and blurry, and we only need thin, well-defined lines? This is where non-max suppression helps us.
@@ -247,7 +241,6 @@ def non_max_supression(self):
   src="https://firebasestorage.googleapis.com/v0/b/portfolio-data-f5676.appspot.com/o/img%2Fblog%2Fcanny-edge-detection%2Fnon_max_suppression_img.webp?alt=media&token=39890d76-36b2-44a3-be18-57d92d57c2ad"
   alt="non-max supression image"
   caption="Image after performing non-max suppression"
-  client:load
 />
 
 ## Double Thresholding
@@ -256,7 +249,6 @@ def non_max_supression(self):
   src="https://firebasestorage.googleapis.com/v0/b/portfolio-data-f5676.appspot.com/o/img%2Fblog%2Fcanny-edge-detection%2Fdouble_threshold.webp?alt=media&token=ab645a18-0f79-4ca6-8b94-bf9f55565b7a"
   alt="double threshold image"
   caption="Double thresholds of value: <strong>Low = 0.09</strong> and <strong>High = 0.18</strong> (represented as ratios)"
-  client:load
 />
 
 _Are we done yet?_ The answer is **No**. We need to detect edges. What type of edges? From the above steps, we will get the firm edges (with high intensity). Now, we wish to detect the weak edges along the outlines of the image.
@@ -323,7 +315,6 @@ Hence, we arrive at our final output:
   src="https://github.com/noobsiecoder/edge-detection-filters/blob/main/results/canny/1/Canny_impl.png?raw=true"
   alt="Final result"
   caption="Final output: Edge tracking by Hysteresis of <strong>intensity ≥ 50</strong>"
-  client:load
 />
 
 The Canny edge detection is robust and reliable. It performs better than the Sobel filter (Sobel Operator). When we compare the result with OpenCV’s Canny() method, we can see them to be highly distinct.
@@ -332,7 +323,6 @@ The Canny edge detection is robust and reliable. It performs better than the Sob
   src="https://github.com/noobsiecoder/edge-detection-filters/blob/main/results/canny/1/Canny_cv2.png?raw=true"
   alt="Final result with opencv"
   caption="Canny edge detection by using OpenCV’s built-in function"
-  client:load
 />
 
 The computational comparison b/w OpenCV’s Canny and custom implementation and the time taken to detect the edges:
@@ -350,7 +340,6 @@ When comparing the images side-to-side, we can see that the outlines formed by O
   src="https://github.com/noobsiecoder/edge-detection-filters/blob/main/results/canny/1/Figure_2.png?raw=true"
   alt="Comparison b/w two canny edge detectors"
   caption="A side-to-side comparison"
-  client:load
 />
 
 [Click here](https://github.com/noobsiecoder/edge-detection-filters/blob/main/src/canny.py) to access the code to implement Canny Edge Detection.

@@ -15,7 +15,6 @@ import BlogImage from "@astro/BlogImage.astro";
   src="https://miro.medium.com/v2/resize:fit:548/format:webp/1*mVRwJFTW0faTzYQXF_yHgQ.jpeg"
   alt="RGB pixels"
   caption="A representation of RGB channel as a 3x3 matrix"
-  client:load
 />
 
 As humans, when we see an image, we observe shapes and edges. We use this data to interpret an object. Ever since automation bloomed, we have been automating a plethora of work. Object detection and recognition require edge detection. A computer cannot interpret an image like a human would. Instead, we work with the image pixels. So, how are these pixels represented in a computer? A two-dimensional array with an additional column to represent the color channels of the image.
@@ -26,9 +25,9 @@ Now, let’s dive into the **Sobel Edge Detection** implementation. It is a **gr
 2. Apply a 3x3 convolution filter horizontally and vertically to the grayscale intensity values
 3. Calculate the gradient magnitude:
 
- $$ 
- mg = \sqrt{((hrz^{2}) + (vrt^{2}))}
- $$
+$$
+mg = \sqrt{((hrz^{2}) + (vrt^{2}))}
+$$
 
 4. Choose an appropriate value for thresholding, higher the value, lowers the chances of finding an edge (dull)
 
@@ -143,9 +142,8 @@ Pixels with gradient magnitudes exceeding the threshold are deemed to belong to 
 
 <BlogImage
   src="https://github.com/noobsiecoder/edge-detection-filters/blob/main/results/sobel/1/Figure_2.png?raw=true"
-  alt="Comparison b/w opencv's and scratch function images" 
+  alt="Comparison b/w opencv's and scratch function images"
   caption="A comparison between Sobel filters implemented from scratch (left) and using OpenCv2 (right)"
-  client:load
 />
 
 The above figure depicts two contrasting images between one image. The one on the right(used Cv2.Sobel) detected the edges more accurately than the one on the left side. The image on the right is generated using Opencv’s Sobel operator. In this method, the noise in the picture is removed/smoothed, and then edge detection is implemented. The threshold value also plays a vital role in the edge detection. Lower threshold values gave satisfactory results for some images, but some failed.
