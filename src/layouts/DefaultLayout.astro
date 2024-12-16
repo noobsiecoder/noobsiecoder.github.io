@@ -11,6 +11,11 @@ const { title, description } = Astro.props;
   <head>
     <meta charset="utf-8" />
     <meta name="description" content={description} />
+
+    <!-- shortcut icon -->
+    <link rel="icon" href="/icons/favicon.ico" />
+    <!-- shortcut icon -->
+
     <link
       rel="icon"
       type="image/png"
@@ -23,14 +28,33 @@ const { title, description } = Astro.props;
       href="/icons/favicon-16x16.png"
       sizes="16x16"
     />
+
+    <!-- Android/Chrome -->
+    <link rel="manifest" href="/icons/site.webmanifest" />
     <link
       rel="icon"
+      type="image/png"
+      href="/icons/android-chrome-192x192.png"
+      sizes="192x192"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      href="/icons/android-chrome-512x512.png"
+      sizes="512x512"
+    />
+    <!-- Android/Chrome -->
+
+    <!-- Apple Icons -->
+    <link
+      rel="apple-touch-icon"
       type="image/png"
       href="/icons/apple-touch-icon.png"
       sizes="180x180"
     />
+    <!-- Apple Icons -->
+
     <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
