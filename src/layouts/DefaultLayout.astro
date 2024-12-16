@@ -44,6 +44,23 @@ const { title, description } = Astro.props;
 
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="robots" content="index, follow" />
+
+    <script type="application/ld+json" is:inline>
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Abhishek's Portfolio",
+        "description": "Take a deepdive into Abhishek's blogs where he explains his research and projects",
+        "url": "https://noobsiecoder.github.io/",
+        "image": {
+          "@type": "ImageObject",
+          "url": "https://noobsiecoder.github.io/new_icons/icon.jpeg",
+          "width": 640,
+          "height": 640
+        }
+      }
+    </script>
 
     <!-- Dynamic Meta Tags -->
     <meta itemprop="name" content={title} />
