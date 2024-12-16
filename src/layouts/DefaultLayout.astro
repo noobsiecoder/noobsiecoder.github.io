@@ -4,6 +4,7 @@ interface Props {
   description: string;
 }
 
+const OG_IMG_URL = `${Astro.url}new_icons/icon.jpeg`;
 const { title, description } = Astro.props;
 ---
 
@@ -46,60 +47,93 @@ const { title, description } = Astro.props;
 
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content="/icons/favicon-16x16.png" />
+    <meta property="og:image" content={OG_IMG_URL} />
     <meta property="og:url" content={Astro.url} />
     <meta property="og:type" content="website" />
 
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:site" content="@abs_1405" />
     <!-- TODO: Dynamic images (intro) for both intro page and the blog pages -->
     <!-- <meta name="twitter:image" content="{dynamic-image-here}" /> -->
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:site" content="@abs_1405" />
+    <!-- <meta name="twitter:card" content="summary" /> -->
 
-    <!-- shortcut icon -->
-    <link rel="icon" href="/icons/favicon.ico" />
-    <!-- shortcut icon -->
-
-    <!-- icons -->
-    <link
-      rel="icon"
-      type="image/png"
-      href="/icons/favicon-32x32.png"
-      sizes="32x32"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      href="/icons/favicon-16x16.png"
-      sizes="16x16"
-    />
-    <!-- icons -->
-
-    <!-- Android/Chrome -->
-    <link rel="manifest" href="/icons/site.webmanifest" />
-    <link
-      rel="icon"
-      type="image/png"
-      href="/icons/android-chrome-192x192.png"
-      sizes="192x192"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      href="/icons/android-chrome-512x512.png"
-      sizes="512x512"
-    />
-    <!-- Android/Chrome -->
-
-    <!-- Apple Icons -->
     <link
       rel="apple-touch-icon"
-      type="image/png"
-      href="/icons/apple-touch-icon.png"
-      sizes="180x180"
+      sizes="57x57"
+      href="/new_icons/apple-icon-57x57.png"
     />
-    <!-- Apple Icons -->
+    <link
+      rel="apple-touch-icon"
+      sizes="60x60"
+      href="/new_icons/apple-icon-60x60.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="72x72"
+      href="/new_icons/apple-icon-72x72.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="76x76"
+      href="/new_icons/apple-icon-76x76.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="114x114"
+      href="/new_icons/apple-icon-114x114.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="120x120"
+      href="/new_icons/apple-icon-120x120.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="144x144"
+      href="/new_icons/apple-icon-144x144.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="152x152"
+      href="/new_icons/apple-icon-152x152.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/new_icons/apple-icon-180x180.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="192x192"
+      href="/new_icons/android-icon-192x192.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/new_icons/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="96x96"
+      href="/new_icons/favicon-96x96.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/new_icons/favicon-16x16.png"
+    />
+    <link rel="manifest" href="/new_icons/manifest.json" />
+    <meta name="msapplication-TileColor" content="#ffffff" />
+    <meta
+      name="msapplication-TileImage"
+      content="/new_icons/ms-icon-144x144.png"
+    />
+    <meta name="theme-color" content="#ffffff" />
   </head>
   <body
     class="relative min-h-screen px-6 py-9 md:px-24 md:py-12 lg:px-72 lg:py-16 xl:px-96 2xl:px-[28rem] 3xl:px-[32rem] 4xl:px-[36rem] 5xl:px-[40rem] 6xl:px-[44rem] 7xl:px-[48rem] bg-stone-50 dark:bg-stone-900"
