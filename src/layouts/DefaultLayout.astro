@@ -10,50 +10,6 @@ const { title, description } = Astro.props;
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="description" content={description} />
-
-    <!-- shortcut icon -->
-    <link rel="icon" href="/icons/favicon.ico" />
-    <!-- shortcut icon -->
-
-    <link
-      rel="icon"
-      type="image/png"
-      href="/icons/favicon-32x32.png"
-      sizes="32x32"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      href="/icons/favicon-16x16.png"
-      sizes="16x16"
-    />
-
-    <!-- Android/Chrome -->
-    <link rel="manifest" href="/icons/site.webmanifest" />
-    <link
-      rel="icon"
-      type="image/png"
-      href="/icons/android-chrome-192x192.png"
-      sizes="192x192"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      href="/icons/android-chrome-512x512.png"
-      sizes="512x512"
-    />
-    <!-- Android/Chrome -->
-
-    <!-- Apple Icons -->
-    <link
-      rel="apple-touch-icon"
-      type="image/png"
-      href="/icons/apple-touch-icon.png"
-      sizes="180x180"
-    />
-    <!-- Apple Icons -->
-
     <meta name="viewport" content="width=device-width" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -84,7 +40,66 @@ const { title, description } = Astro.props;
       crossorigin="anonymous"
       onload="renderMathInElement(document.body);"
       is:inline></script>
+
     <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content="/icons/favicon-16x16.png" />
+    <meta property="og:url" content={Astro.url} />
+    <meta property="og:type" content="website" />
+
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <!-- TODO: Dynamic images (intro) for both intro page and the blog pages -->
+    <!-- <meta name="twitter:image" content="{dynamic-image-here}" /> -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@abs_1405" />
+
+    <!-- shortcut icon -->
+    <link rel="icon" href="/icons/favicon.ico" />
+    <!-- shortcut icon -->
+
+    <!-- icons -->
+    <link
+      rel="icon"
+      type="image/png"
+      href="/icons/favicon-32x32.png"
+      sizes="32x32"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      href="/icons/favicon-16x16.png"
+      sizes="16x16"
+    />
+    <!-- icons -->
+
+    <!-- Android/Chrome -->
+    <link rel="manifest" href="/icons/site.webmanifest" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="/icons/android-chrome-192x192.png"
+      sizes="192x192"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      href="/icons/android-chrome-512x512.png"
+      sizes="512x512"
+    />
+    <!-- Android/Chrome -->
+
+    <!-- Apple Icons -->
+    <link
+      rel="apple-touch-icon"
+      type="image/png"
+      href="/icons/apple-touch-icon.png"
+      sizes="180x180"
+    />
+    <!-- Apple Icons -->
   </head>
   <body
     class="relative min-h-screen px-6 py-9 md:px-24 md:py-12 lg:px-72 lg:py-16 xl:px-96 2xl:px-[28rem] 3xl:px-[32rem] 4xl:px-[36rem] 5xl:px-[40rem] 6xl:px-[44rem] 7xl:px-[48rem] bg-stone-50 dark:bg-stone-900"
