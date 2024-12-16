@@ -4,7 +4,7 @@ interface Props {
   description: string;
 }
 
-const OG_IMG_URL = `${Astro.url}new_icons/icon.jpeg`;
+const ICO_URL = `${Astro.url}new_icons/icon.jpeg`;
 const { title, description } = Astro.props;
 ---
 
@@ -45,20 +45,30 @@ const { title, description } = Astro.props;
     <title>{title}</title>
     <meta name="description" content={description} />
 
+    <!-- Dynamic Meta Tags -->
+    <meta itemprop="name" content={title} />
+    <meta itemprop="description" content={description} />
+    <meta itemprop="url" content={Astro.url} />
+    <meta itemprop="image" content={ICO_URL} />
+    <!-- Dynamic Meta Tags -->
+
+    <!-- Open Graph for Previews -->
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={OG_IMG_URL} />
+    <meta property="og:image" content={ICO_URL} />
     <meta property="og:image:width" content="640" />
     <meta property="og:image:height" content="640" />
     <meta property="og:url" content={Astro.url} />
     <meta property="og:type" content="website" />
+    <!-- Open Graph for Previews -->
 
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:site" content="@abs_1405" />
     <!-- TODO: Dynamic images (intro) for both intro page and the blog pages -->
-    <!-- <meta name="twitter:image" content="{dynamic-image-here}" /> -->
-    <!-- <meta name="twitter:card" content="summary" /> -->
+    <meta name="twitter:image" content={ICO_URL} />
+    <!-- Twitter Cards -->
 
     <link
       rel="apple-touch-icon"
