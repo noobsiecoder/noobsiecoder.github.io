@@ -79,41 +79,41 @@ const ImageComp = ({ imgSrc, alt }: ImgProps) => (
 const Links = ({ compType }: LinkProps) => (
   <div className="flex gap-x-4">
     {compType === "exploded"
-      ? links.map((link, idx) => (
-          <a
-            key={idx}
-            className="flex items-center gap-x-1"
-            href={link.link}
-            target="_blank"
-          >
-            <ImageComp
-              imgSrc={{
-                dark: link.logo.dark.src,
-                light: link.logo.light.src,
-              }}
-              alt={link.alt}
-            />
-            <h3 className="text-xs lg:text-sm xl:text-base 3xl:text-xl 6xl:text-2xl font-poppins tracking-tight text-stone-900 dark:text-stone-100">
-              {link.name}
-            </h3>
-          </a>
-        ))
+      ? links.sort((a, b) => a.name.localeCompare(b.name)).map((link, idx) => (
+        <a
+          key={idx}
+          className="flex items-center gap-x-1"
+          href={link.link}
+          target="_blank"
+        >
+          <ImageComp
+            imgSrc={{
+              dark: link.logo.dark.src,
+              light: link.logo.light.src,
+            }}
+            alt={link.alt}
+          />
+          <h3 className="text-xs lg:text-sm xl:text-base 3xl:text-xl 6xl:text-2xl font-poppins tracking-tight text-stone-900 dark:text-stone-100">
+            {link.name}
+          </h3>
+        </a>
+      ))
       : links.map((link, idx) => (
-          <a
-            key={idx}
-            className="flex items-center gap-x-1"
-            href={link.link}
-            target="_blank"
-          >
-            <ImageComp
-              imgSrc={{
-                dark: link.logo.dark.src,
-                light: link.logo.light.src,
-              }}
-              alt={link.alt}
-            />
-          </a>
-        ))}
+        <a
+          key={idx}
+          className="flex items-center gap-x-1"
+          href={link.link}
+          target="_blank"
+        >
+          <ImageComp
+            imgSrc={{
+              dark: link.logo.dark.src,
+              light: link.logo.light.src,
+            }}
+            alt={link.alt}
+          />
+        </a>
+      ))}
   </div>
 );
 
