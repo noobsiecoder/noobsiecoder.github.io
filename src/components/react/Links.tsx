@@ -1,11 +1,13 @@
 import InBlue21px from "@logo/In/In-Blue-21@2x.png";
 import InWhite21px from "@logo/In/In-White-21@2x.png";
-import XBlack from "@logo/X/logo-black.png";
-import XWhite from "@logo/X/logo-white.png";
-import IgGradient from "@logo/Ig/Instagram_Glyph_Gradient.png";
-import IgWhite from "@logo/Ig/Instagram_Glyph_White.png";
+// import XBlack from "@logo/X/logo-black.png";
+// import XWhite from "@logo/X/logo-white.png";
+// import IgGradient from "@logo/Ig/Instagram_Glyph_Gradient.png";
+// import IgWhite from "@logo/Ig/Instagram_Glyph_White.png";
 import GhDark from "@logo/Gh/github-mark.png";
 import GhWhite from "@logo/Gh/github-mark-white.png";
+import GsWhite from "@logo/Gs/google-scholar-dark-mode.png";
+import GsDark from "@logo/Gs/google-scholar-light-mode.png";
 
 interface LinkProps {
   compType?: string;
@@ -29,24 +31,25 @@ const links = [
       dark: InWhite21px,
     },
   },
-  {
-    name: "Twitter",
-    alt: "X/Twitter Logo",
-    link: "https://www.x.com/@abs_1405",
-    logo: {
-      light: XBlack,
-      dark: XWhite,
-    },
-  },
-  {
-    name: "Instagram",
-    alt: "Instagram Logo",
-    link: "https://www.instagram.com/abhishek._.sriram",
-    logo: {
-      light: IgGradient,
-      dark: IgWhite,
-    },
-  },
+  /* Commenting misc links */
+  // {
+  //   name: "Twitter",
+  //   alt: "X/Twitter Logo",
+  //   link: "https://www.x.com/@abs_1405",
+  //   logo: {
+  //     light: XBlack,
+  //     dark: XWhite,
+  //   },
+  // },
+  // {
+  //   name: "Instagram",
+  //   alt: "Instagram Logo",
+  //   link: "https://www.instagram.com/abhishek._.sriram",
+  //   logo: {
+  //     light: IgGradient,
+  //     dark: IgWhite,
+  //   },
+  // },
   {
     name: "GitHub",
     alt: "GitHub Logo",
@@ -54,6 +57,15 @@ const links = [
     logo: {
       light: GhDark,
       dark: GhWhite,
+    },
+  },
+  {
+    name: "Google Scholar",
+    alt: "Google Scholar Logo",
+    link: "https://scholar.google.com/citations?user=rRJxD2AAAAAJ&hl=en",
+    logo: {
+      light: GsDark,
+      dark: GsWhite,
     },
   },
 ];
