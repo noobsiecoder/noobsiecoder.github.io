@@ -8,10 +8,11 @@ import Posts from "./posts/index.astro";
 
 const entry = await getEntry("info", "me");
 const { Content } = await render(entry);
+const workEntry = await getEntry("info", "work");
 ---
 
 <DefaultLayout
-  title="Abhishek's Portfolio"
+  title="Abhishek's Webpage"
   description="Take a deepdive into Abhishek's blogs where he explains his research and projects"
 >
   <div class="grid gap-y-6">
@@ -51,9 +52,35 @@ const { Content } = await render(entry);
         {entry?.data.title}
       </h2>
       <div
-        class="prose tracking-tight dark:prose-invert lg:prose-xl xl:text-lg 3xl:text-xl font-poppins prose-p:text-justify prose-figure:p-0 prose-stone max-w-none"
+        class="prose tracking-tight dark:prose-invert prose-sm lg:prose-base 2xl:text-lg font-poppins prose-p:text-justify prose-figure:p-0 prose-stone max-w-none"
       >
         <Content />
+      </div>
+    </div>
+    <div>
+      <h2
+        class="text-lg lg:text-xl 3xl:text-2xl font-semibold font-poppins tracking-tight text-stone-900 dark:text-stone-100"
+      >
+        {workEntry?.data.title}
+      </h2>
+      <div class="grid gap-y-2 max-w-none">
+        {
+          workEntry?.data.work.map((value: [Object], idx: number) => (
+            <div class="justify-between flex">
+              <div class="-space-y-0.5">
+                <h3 class="font-poppins tracking-tight text-justify text-stone-700 dark:text-stone-200 3xl:text-lg font-medium">
+                  {value.organization}
+                </h3>
+                <h3 class="font-poppins tracking-tight text-justify text-stone-700 dark:text-stone-300 text-xs lg:text-sm 3xl:text-base font-light">
+                  {value.title}
+                </h3>
+              </div>
+              <h3 class="font-poppins tracking-tight text-justify text-stone-700 dark:text-stone-200 text-xs lg:text-sm 3xl:text-base">
+                {value.timeline}
+              </h3>
+            </div>
+          ))
+        }
       </div>
     </div>
     <div class="grid gap-y-3">

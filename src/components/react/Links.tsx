@@ -1,7 +1,7 @@
 import InBlue21px from "@logo/In/In-Blue-21@2x.png";
 import InWhite21px from "@logo/In/In-White-21@2x.png";
-// import XBlack from "@logo/X/logo-black.png";
-// import XWhite from "@logo/X/logo-white.png";
+import XBlack from "@logo/X/logo-black.png";
+import XWhite from "@logo/X/logo-white.png";
 // import IgGradient from "@logo/Ig/Instagram_Glyph_Gradient.png";
 // import IgWhite from "@logo/Ig/Instagram_Glyph_White.png";
 import GhDark from "@logo/Gh/github-mark.png";
@@ -31,16 +31,16 @@ const links = [
       dark: InWhite21px,
     },
   },
+  {
+    name: "Twitter",
+    alt: "X/Twitter Logo",
+    link: "https://www.x.com/noobsiecoder",
+    logo: {
+      light: XBlack,
+      dark: XWhite,
+    },
+  },
   /* Commenting misc links */
-  // {
-  //   name: "Twitter",
-  //   alt: "X/Twitter Logo",
-  //   link: "https://www.x.com/@abs_1405",
-  //   logo: {
-  //     light: XBlack,
-  //     dark: XWhite,
-  //   },
-  // },
   // {
   //   name: "Instagram",
   //   alt: "Instagram Logo",
@@ -105,9 +105,9 @@ const Links = ({ compType }: LinkProps) => (
             }}
             alt={link.alt}
           />
-          <h3 className="text-xs lg:text-sm xl:text-base 3xl:text-xl 6xl:text-2xl font-poppins tracking-tight text-stone-900 dark:text-stone-100">
+          {/* <h3 className="text-xs lg:text-sm xl:text-base 3xl:text-xl 6xl:text-2xl font-poppins tracking-tight text-stone-900 dark:text-stone-100">
             {link.name}
-          </h3>
+          </h3> */}
         </a>
       ))
       : links.map((link, idx) => (
