@@ -1,0 +1,155 @@
+---
+slug: "TTRL-rl-llm"
+title: "Test-Time Reinforcement Learning"
+emoji: "🔧"
+date: 2025-09-29T09:44:00.003Z
+desc: "Dive deep into how TTRL help LLM self-improve on unlabeled test data through online-RL"
+topic: "LLM + RLFT + TTRL"
+lang: "en"
+draft: false
+---
+
+import BlogImage from "@astro/BlogImage.astro";
+
+## Introduction
+Test-Time Reinforcement Learning (TTRL) represents a paradigm shift in how we train small to large language models. Imagine a model that improves itself on new problems without any labeled answers - learning from its own reasoning patterns during inference. This ground-breaking approach from Tsinghua University and Shanghai AI Lab challenges our assumptions about what's required for effective reinforcement learning in large language models (LLM).
+
+To understand TTRL's significance, you should know about Reinforcement Learning Fine-Tuning (RLFT). If you're unfamiliar, check out my [previous blog](./MOTIF-rlft-llm#what-is-rlft) for the basics. To read the research, [click here](https://arxiv.org/pdf/2504.16084) to view the ArXiv paper.
+
+**<u>Note</u>**: TTRL isn't a RLFT technique, but an overlay on existing RLFT techniques like PPO, GRPO, DPO, etc.
+
+## What is TTRL?
+Test-Time Reinforcement Learning enables models to self-improve using only unlabeled test data. Unlike traditional RL that requires ground-truth labels for rewards, TTRL estimates rewards through majority voting on the model's own outputs.
+
+Think of it like a student solving practice problems without an answer key, **but with prior knowledge**. They work each problem multiple ways, and if most attempts converge on the same answer, they treat that as likely correct and learn from the pattern.
+
+<BlogImage
+  src="https://firebasestorage.googleapis.com/v0/b/portfolio-data-f5676.appspot.com/o/img%2Fblog%2Fttrl-rl-llm%2FTTRL-diagram.png?alt=media&token=8a27cdb4-5727-48b1-b762-e1a95bac031b"
+  alt="TTRL-in-action"
+  caption="Workflow of TTRL in action"
+/>
+
+## How Does TTRL Work?
+
+The core mechanism is elegantly simple yet powerful:
+
+1. **Generate Multiple Solutions**: For each test problem, the model generates N responses (typically 64 as shown in the paper.)
+2. **Majority Voting**: The most frequent answer becomes the estimated "_correct_" answer.
+3. **Reward Assignment**: Responses matching the majority get `reward=1`, others get 0.
+4. **Parameter Update**: The model updates via Reinforcement Learning (RL) to make high-reward responses more likely.
+5. **Iterate**: As the model improves, its majority voting becomes more accurate, creating better supervision.
+
+This creates a self-reinforcing loop where the model "lifts itself by its bootstraps." But still how does this help the LLM get better over-time? _Simple_: The "_bootstrapping_" success happens because errors in majority voting are often **uncorrelated** with the _model's ability to improve_. The LLM doesn't inherently know the ground truth or possess perfect reasoning capability. Hence, it depends on prior knowledge, rewarding the highest occurring sample in a rollout and refining itself over-time using this technique.
+
+## Math behind TTRL
+
+A consensus output $y^{*}$ or the majority-voted answer is obtained by aggregating all the answers. Then, the reward is calculated $r(y, y^{*})$ based on the similarity index (using AST or ROUGE score) between the sampled action(s) ${y}$ and the consensus action $y^{*}$. The objective of the RL algorithm here is to maximize the expected reward:
+
+$$
+max(\theta) = \mathbb{E}_{y\sim\pi\theta (\mathord{\cdot}|x)}[r(y, y∗)]
+$$
+
+This equation says that we are increasing the expectance of seeing the highest sampled output in a rollout, and increase its likelihood to appear when the same prompt or a similar prompt is seen in later succession.
+
+The reward function in TTRL is given mathematically:
+
+$$
+R(\hat{y_{i}}, y) = \begin{cases}
+    1 & \hat{y_{i}} = y \\
+    0 & otherwise.
+\end{cases}
+$$
+
+Where $\hat{y_{i}}$, is the sampled output in a rollout, and ${y}$ is the majority-voted output from the estimated labels.
+
+The algorithm of the majority-vote system in TTRL is as followes:
+
+<BlogImage
+  src="https://firebasestorage.googleapis.com/v0/b/portfolio-data-f5676.appspot.com/o/img%2Fblog%2Fttrl-rl-llm%2FTTRL-pseudocode.png?alt=media&token=8fd7ac9a-e6e5-4b49-b1f3-adcf8b96e454"
+  alt="TTRL-pseudocode"
+  caption="Pseudocode of TTRL where there is a voting system, and the majority-appeared answer is rewarded with the highest value"
+/>
+
+## Why TTRL Succeeds: The Lucky Hit Phenomenon
+
+The key insight is that even when majority voting produces wrong labels, the reward signals remain surprisingly accurate. Consider this example:
+- (Ground truth) True answer: 3
+- Model's predictions: `[1, 1, 2, 2, 2, 4, 5, 6]`
+- Majority vote: 2 ❌
+- But predictions 1, 4, 5, 6 still correctly get `reward=0` for being wrong!
+
+This "_Lucky Hit_" phenomenon means reward accuracy stays high (~75%) even when label accuracy is low (~40%), providing useful training signals. If it's still confusing, picture this - imagine an easy problem like: "Solve 12 x 13", and the LLM model produced 8 samples in a rollout, and none of them are the right answer (_Note_: the model doesn't have know the ground truth). Those were:
+
+$$
+rollouts = [146, 146, 146, 56, 123, 456, 5, 6]
+$$
+
+Now, we extract the answer from the sampled outputs in a rollout. With the majority-voting system, 146 will be the high-rewarded output. But here's the crucial part - even when the majority is wrong, the incorrect outliers like 56, 123, 456, 5, 6 still receive the correct reward of 0, maintaining signal quality.
+
+## Results
+
+<BlogImage
+  src="https://firebasestorage.googleapis.com/v0/b/portfolio-data-f5676.appspot.com/o/img%2Fblog%2Fttrl-rl-llm%2FTTRL-accuracy_vs_dataset.png?alt=media&token=89c92a55-39f4-4bbd-a298-3905c10fa4a5"
+  alt="TTRL-accuracy-on-dataset"
+  caption="TTRL's accuracy benchmarked over different dataset"
+/>
+
+The results from TTRL are promising. For instance, take a look at the accuracy vs dataset graph shown above. Although it benchmarks on AIME2024 and MATH-500 by self-evolving using the benchmark dataset itself, this raises a critical question: _Is the model actually learning to reason better, or is it simply overfitting to the specific test problems?_ The authors acknowledge this as "_RL (leakage)_" but the implications for genuine capability assessment remain concerning.
+
+<BlogImage
+  src="https://firebasestorage.googleapis.com/v0/b/portfolio-data-f5676.appspot.com/o/img%2Fblog%2Fttrl-rl-llm%2FTTRL-accuracy-entropy-graphs.png?alt=media&token=1ea82e72-6d7e-4c02-8eb3-1cdf77516157"
+  alt="TTRL-accuracy-entropy-curves"
+  caption="Accuracy curve and Entropy curve for total steps taken"
+/>
+
+Now, check the graphs above. The accuracy increases as steps increase, which is expected. More interestingly, when the accuracy rate starts stabilizing (after step 15), the entropy has dropped and remains lower. This suggests the model refined its estimated outputs after just a few steps. Why - Because the estimated samples initially produce a mixture of diverse outputs, but as these signals evolve and refine the reward function, the best signal emerges as entropy diminishes due to signal saturation.
+
+<BlogImage
+  src="https://firebasestorage.googleapis.com/v0/b/portfolio-data-f5676.appspot.com/o/img%2Fblog%2Fttrl-rl-llm%2FTTRL-demerits-curves.png?alt=media&token=1890c51d-654f-464f-bbb8-e6004b2e0fe6"
+  alt="TTRL-weakness"
+  caption="TTRL's weakness - Sensitive to Hyperparameters, lack of prior knowledge of domain, and increase in difficulty across dataset"
+/>
+
+TTRL's main weaknesses become clear in this graph (attempted on AIME 2024). The authors claim increased difficulty requires more episodic turns, but that's only part of the story. They mention that setting temperature to 1.0 (opposed to 0.6) increases the model's output entropy, promoting more extensive exploration. This allows better use of prior knowledge for self-improvement - **crucial for challenging benchmarks**. But this also highlights TTRL's fragility to hyperparameter choices.
+
+<BlogImage
+  src="https://firebasestorage.googleapis.com/v0/b/portfolio-data-f5676.appspot.com/o/img%2Fblog%2Fttrl-rl-llm%2FTTRL-rl_leakage.png?alt=media&token=1f29bfae-9e5b-4e15-9815-e0d69a76b54d"
+  alt="TTRL-rl-leakage"
+  caption="TTRL's RL (Leakage)"
+/>
+
+This graph reveals how "_beneficial_" leakage is to TTRL. While the authors haven't done extensive analysis (keeping it out of scope), they mention that RL can tolerate reward estimation inaccuracies since rewards serve as directional signals for exploration. But this raises the question: 
+
+> Are we measuring a genuine improvement in the LLM or is this a sophisticated memorization of a LLM?
+
+## When to Use TTRL
+
+It excels when:
+- Labeled training data is scarce or expensive.
+- The model has relevant prior knowledge.
+- You need adaptation to new domains at deployment.
+
+It struggles when:
+- **Problems require genuinely novel reasoning as the model lacks domain knowledge.**
+- Hyperparameters aren't carefully tuned.
+- With increase in difficulty across dataset, the number of episodes required in exploring samples and refining the model over time takes a long-time.
+
+## Applications
+
+- **Competition mathematics**: Adapting to new problem styles.
+- **Code generation**: Learning from test cases without solutions.
+- **Scientific discovery**: Exploring problems where ground truth is unknown but with **prior knowledge in the domain of interest.**
+- **Specialized domains**: Where human labeling is expensive or requires expertise.
+
+## Reflection
+
+TTRL is definitely a compelling venture into online-RL and self-evolving language models, tapping into continual learning. Its impressive results - from small models (Qwen-2.5-1B) to large ones (Qwen2.5-32B) - show exponential accuracy improvements through self-refinement. However, the major pitfall I see is this: although it claims to work on unlabeled datasets, it still requires **prior knowledge in that domain** to estimate useful labels for self-refinement. Without this foundation, returns from the signals appear **minimal at best**.
+
+Furthermore, using test datasets for both training and evaluation undermines the paper's claims. While the research is properly conducted, this circular evaluation seems problematic. Dynamic benchmarks with adversarial dataset creation could better assess TTRL's true capabilities.
+
+Yet TTRL demonstrates something profound - models contain far more latent capability than they initially express. A 1.5B model improving from 32.7% to 73% on MATH-500 suggests our models "_know_" more than we realize; they just need better ways to access that knowledge. This raises fundamental questions:
+
+> If models can be their own teachers, what does this mean for continual learning? Could future models self-improve throughout deployment, adapting to each user's needs?
+
+## Acknowledgment
+All content is for educational purposes. Credits to the authors from Tsinghua University and Shanghai AI Lab for developing TTRL. Read the [full paper](https://arxiv.org/abs/2504.16084) for technical details.
