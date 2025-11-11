@@ -14,7 +14,7 @@ work: [
     {
         "title": "Software Engineer",
         "organization": "Zoho Corporation, Inc.",
-        "timeline": "Apr 2022 - Aug 2023"
+        "timeline": "Jan 2023 - Aug 2023"
     },
 ]
 ---
